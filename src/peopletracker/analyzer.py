@@ -1,4 +1,3 @@
-import json
 import os
 import pathlib
 import sys
@@ -219,8 +218,5 @@ class Analyzer:
 
         output_video.release()
 
-    def get_stats(self, json_format=False):
-        result = self.input.get_stats()
-        if json_format:
-            result = json.dumps(result)
-        return result
+    def get_stats(self):
+        return self.input.get_stats()
