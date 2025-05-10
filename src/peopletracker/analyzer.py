@@ -116,8 +116,10 @@ class Input:
                 int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
                 int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)),
             )
+            self.frameRate = int(self.capture.get(cv2.CAP_PROP_FPS))
         else:
             self.frameSize = (0, 0)
+            self.frameRate = 0
 
         self.frame_number = 0
 
@@ -195,16 +197,17 @@ class Input:
 
 
 class Analyzer:
-    def __init__(self, input_video_path="", output_video_path=""):
+    def __init__(self, input_video_path="", output_video_path="", fourcc="mp4v"):
         self.input = Input(input_video_path)
         self.output_video_path = output_video_path
+        self.fourcc = fourcc
 
     def run(self):
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        fourcc = cv2.VideoWriter_fourcc(*self.fourcc)
         output_video = cv2.VideoWriter(
             self.output_video_path,
             fourcc=fourcc,
-            fps=25,
+            fps=self.input.frameRate,
             frameSize=self.input.frameSize,
         )
         while True:
