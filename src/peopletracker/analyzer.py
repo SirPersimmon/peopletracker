@@ -111,7 +111,7 @@ class Input:
         self.tracker = EnhancedTracker(metric, max_age=MAX_AGE, n_init=N_INIT)
 
         self.capture = cv2.VideoCapture(file_path if file_path else 0)
-        if self.capture.isOpened():  # Checks the stream
+        if self.capture.isOpened():
             self.frameSize = (
                 int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)),
                 int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -135,13 +135,13 @@ class Input:
 
         keypoints, self.currentFrame = np.array(datum.poseKeypoints), datum.cvOutputData
 
-        # Doesn't use keypoint confidence
+        # Doesn't use keypoint confidence.
         try:
             poses = keypoints[:, :, :2]
         except:
             return False
 
-        # Get containing box for each seen body
+        # Get containing box for each seen body.
         boxes = poses2boxes(poses)
         boxes_xywh = [[x1, y1, x2 - x1, y2 - y1] for [x1, y1, x2, y2] in boxes]
         features = self.encoder(self.currentFrame, boxes_xywh)
@@ -159,7 +159,7 @@ class Input:
             boxes_det, self.nms_max_overlap, scores
         )
         detections = [detections[i] for i in indices]
-        # Call the tracker
+        # Call the tracker.
         self.tracker.predict()
         self.tracker.update(self.currentFrame, detections, self.frame_number)
 
@@ -170,8 +170,7 @@ class Input:
             else:
                 color = (255, 255, 255)
             bbox = track.to_tlbr()
-            # print("Body keypoints:")
-            # print(track.last_seen_detection.pose)
+
             cv2.rectangle(
                 self.currentFrame,
                 (int(bbox[0]), int(bbox[1])),
@@ -209,13 +208,11 @@ class Analyzer:
             frameSize=self.input.frameSize,
         )
         while True:
-            res = self.input.run()
-            if not res:
+            result = self.input.run()
+            if not result:
                 break
 
-            frame = self.input.currentFrame
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            output_video.write(frame)
+            output_video.write(self.input.currentFrame)
 
         output_video.release()
 
