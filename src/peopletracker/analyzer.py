@@ -113,8 +113,8 @@ class Input:
         self.capture = cv2.VideoCapture(file_path if file_path else 0)
         if self.capture.isOpened():
             self.frameSize = (
-                int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)),
                 int(self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)),
             )
         else:
             self.frameSize = (0, 0)
